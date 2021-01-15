@@ -11,10 +11,23 @@
           <h5 class="card-header"><a href="{{ obj.url }}">{{ obj.title }}</a></h5>
           <div class="card-body">
             <p class="card-text">{{ obj.description }}</p>
+            <p>{{ obj.city.name }} | {{ obj.language.name }} | <small>{{ obj.timestamp|date:"d-m-Y" }}</small></p>
+
+
           </div>
         </div>
 
     {% endfor %}
+
+
+ <form method="GET" action="">
+  <label>City:</label><br>
+  <input type="text"  name="city" value="Moscow"><br>
+   <label>Speciality:</label><br>
+  <input type="text"  name="language" value="Python"><br>
+     <p></p>
+  <input type="submit" value="Submit">
+</form>
 
 {% endblock content %}
 
