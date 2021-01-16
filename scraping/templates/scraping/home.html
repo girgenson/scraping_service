@@ -8,10 +8,13 @@
     {% for obj in object_list %}
 
         <div class="card my-2">
-          <h5 class="card-header"><a href="{{ obj.url }}">{{ obj.title }}</a></h5>
+          <h5 class="card-header"><a href="{{ obj.url }}">
+              {{ obj.title }}</a></h5>
           <div class="card-body">
             <p class="card-text">{{ obj.description }}</p>
-            <p>{{ obj.city.name }} | {{ obj.language.name }} | <small>{{ obj.timestamp|date:"d-m-Y" }}</small></p>
+            <p>{{ obj.city.name }} | {{ obj.language.name }} | <small>
+                {{ obj.timestamp|date:"d-m-Y" }}</small>
+            </p>
 
 
           </div>
@@ -21,11 +24,7 @@
 
 
  <form method="GET" action="">
-  <label>City:</label><br>
-  <input type="text"  name="city" value="Moscow"><br>
-   <label>Speciality:</label><br>
-  <input type="text"  name="language" value="Python"><br>
-     <p></p>
+    {{ form.as_p }}
   <input type="submit" value="Submit">
 </form>
 
