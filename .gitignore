@@ -9,5 +9,7 @@ db.sqlite3-journal
 /static
 /.idea
 /venv
-test.py
-tests.py
+/env
+.env
+.venv
+TODO.py
