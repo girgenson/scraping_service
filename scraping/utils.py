@@ -37,7 +37,9 @@ cyrillic_letters = {
 
 def from_cyrillic_to_eng(text: str):
     text = text.replace(' ', '_').lower()
+    print(text)
     tmp = ''
-    for ch in text:
-        tmp += cyrillic_letters.get(ch, ch)
+    for i in text:
+        tmp += cyrillic_letters.get(i, i)
+        print(tmp)
     return tmp
