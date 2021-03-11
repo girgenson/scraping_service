@@ -9,6 +9,7 @@ class City(models.Model):
                             )
     slug = models.CharField(max_length=50, blank=True)
 
+
     class Meta:
         verbose_name = 'Название населенного пункта'
         verbose_name_plural = 'Название населенных пунктов'
@@ -43,11 +44,11 @@ class Language(models.Model):
 
 
 class Vacancy(models.Model):
-    url = models.URLField(unique=True)
     title = models.CharField(max_length=250,
                              verbose_name='Заголовок вакансии')
     company = models.CharField(max_length=250,
                                verbose_name='Компания')
+    url = models.URLField(unique=True)
     description = models.TextField(verbose_name='Описание вакансии')
     city = models.ForeignKey('City', on_delete=models.CASCADE,
                              verbose_name='Город')
