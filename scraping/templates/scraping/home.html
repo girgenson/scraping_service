@@ -5,13 +5,25 @@
 
 {% block content %}
 
+
     {% for obj in object_list %}
-        <div class="card">
+        <div class="card my-2">
           <h5 class="card-header"><a href="{{ obj.url }}">{{ obj.title }}</a></h5>
           <div class="card-body">
-            <p class="card-text">{{ obj.description }}</p>
+              <p class="card-text">{{ obj.description }}</p>
+              <p>{{ obj.city.name }} | {{ obj.language.name }} | <small>{{ obj.timestamp|date:"d-m-Y" }}</small></p>
           </div>
         </div>
     {% endfor %}
+
+
+    <form action="">
+      <label for="fname">City:</label>
+
+      <input type="text" id="fname" name="city" value="Moscow">
+
+         <p></p>
+      <input type="submit" value="Submit">
+    </form>
 
 {% endblock content %}
