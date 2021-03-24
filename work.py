@@ -45,18 +45,19 @@ def rabota(url):
     jobs = []
     errors = []
     domain = 'https://rabota.ua'
+    # url = 'https://rabota.ua/zapros/python/'
     resp = requests.get(url, headers=headers)
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
-        new_jobs = soup.find('div', attrs={'class': 'f-vacancylist-newnotfound'})
+        new_jobs = soup.find('span', attrs={'class': 'fd-beefy-craftsmen'})
         if not new_jobs:
-            table = soup.find('table', id='ct100_content_vacancyList_gridList')
+            table = soup.find('table', id='ctl00_content_vacancyList_gridList')
             if table:
                 tr_list = table.find_all('tr', attrs={'id': True})
                 for tr in tr_list:
                     div = tr.find('div', attrs={'class': 'card-body'})
                     if div:
-                        title = div.find('p', attrs={'class': 'card-title'})
+                        title = div.find('h2', attrs={'class': 'card-title'})
                         href = title.a['href']
                         content = tr.p.text
                         company = 'No name'
@@ -71,8 +72,7 @@ def rabota(url):
             else:
                 errors.append({'url': url, 'title': "Table doesn't exist"})
         else:
-            errors.append({'url': url, 'title': "Page is empty"
-                                                ""})
+            errors.append({'url': url, 'title': "Page is empty"})
     else:
         errors.append({'url': url, 'title': "Page doesn't response"})
     return jobs, errors
@@ -85,23 +85,28 @@ def dou(url):
     resp = requests.get(url, headers=headers)
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
-        main_div = soup.find('div', id='vacancyListId')
+        main_div = soup.find('div', id='pjax-job-list')
         if main_div:
-            li_lst = main_div.find_all('li', attrs={'class': 'job-link'})
-            for li in li_lst:
-                title = li.find('div', attrs={'class': 'title'})
-                href = title.a['href']
-                cont = li.find('div', attrs={'class': 'sh-info'})
-                content = cont.text
-                company = 'No name'
-                a = title.find('a', attrs={'class': 'company'})
-                if a:
-                    company = a.text
-                jobs.append({'title': title.text,
-                             'url': href,
-                             'description': content,
-                             'company': company,
-                             })
+            li_lst = main_div.find_all('div', attrs={'class': 'card card-hover card-visited wordwrap job-link'})
+            for div in li_lst:
+                if '__hot' not in div['class']:
+                    title = div.find('a')
+                    real_title = title['title']
+                    href = title['href']
+                    # href = title.find('title')
+                    # cont = div.find('div', attrs={'class': 'sh-info'})
+                    cont = div.find('p', attrs={'class': 'overflow text-muted add-top-sm add-bottom'})
+                    content = cont.text
+
+                    company = 'No name'
+                    a = title.find('a', attrs={'class': 'company'})
+                    if a:
+                        company = a.text
+                    jobs.append({'title': title.text,
+                                 'url': href,
+                                 # 'description': content,
+                                 'company': company,
+                                 })
         else:
             errors.append({'url': url, 'title': "Div doesn't exist"})
     else:
@@ -110,8 +115,10 @@ def dou(url):
 
 
 if __name__ == '__main__':
-    url = 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'
+    # url = 'https://rabota.ua/zapros/python'
+    url = 'https://www.work.ua/ru/jobs-kyiv-python/'
     jobs, errors = dou(url)
     h = codecs.open('work.txt', 'w', 'utf-8')
     h.write(str(jobs))
     h.close()
+    print(errors)
