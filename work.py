@@ -59,11 +59,11 @@ def rabota(url):
                     if div:
                         title = div.find('h2', attrs={'class': 'card-title'})
                         href = title.a['href']
-                        content = tr.p.text
+                        content = div.find('div', attrs={'class': 'card-description'}).text
                         company = 'No name'
-                        p = tr.find('p', attrs={'class': 'card-title'})
+                        p = tr.find('a', attrs={'class': 'company-profile-name'})
                         if p:
-                            company = p.a.text
+                            company = p.get('title')
                         jobs.append({'title': title.text,
                                      'url': domain + href,
                                      'description': content,
@@ -85,26 +85,22 @@ def dou(url):
     resp = requests.get(url, headers=headers)
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
-        main_div = soup.find('div', id='pjax-job-list')
+        main_div = soup.find('div', id='vacancyListId')
         if main_div:
-            li_lst = main_div.find_all('div', attrs={'class': 'card card-hover card-visited wordwrap job-link'})
-            for div in li_lst:
-                if '__hot' not in div['class']:
-                    title = div.find('a')
-                    real_title = title['title']
-                    href = title['href']
-                    # href = title.find('title')
-                    # cont = div.find('div', attrs={'class': 'sh-info'})
-                    cont = div.find('p', attrs={'class': 'overflow text-muted add-top-sm add-bottom'})
+            li_lst = main_div.find_all('li', attrs={'class': 'l-vacancy'})
+            for li in li_lst:
+                if '__hot' not in li['class']:
+                    title = li.find('div', attrs={'class': 'title'})
+                    href = title.a['href']
+                    cont = li.find('div', attrs={'class': 'sh-info'})
                     content = cont.text
-
                     company = 'No name'
                     a = title.find('a', attrs={'class': 'company'})
                     if a:
                         company = a.text
                     jobs.append({'title': title.text,
                                  'url': href,
-                                 # 'description': content,
+                                 'description': content,
                                  'company': company,
                                  })
         else:
@@ -116,7 +112,8 @@ def dou(url):
 
 if __name__ == '__main__':
     # url = 'https://rabota.ua/zapros/python'
-    url = 'https://www.work.ua/ru/jobs-kyiv-python/'
+    # url = 'https://www.work.ua/ru/jobs-kyiv-python/'
+    url = 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'
     jobs, errors = dou(url)
     h = codecs.open('work.txt', 'w', 'utf-8')
     h.write(str(jobs))
