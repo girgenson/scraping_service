@@ -140,7 +140,6 @@ def djinni(url):
     return jobs, errors
 
 
-
 if __name__ == '__main__':
     url = 'https://djinni.co/jobs/?keywords=python+%D0%BA%D0%B8%D0%B5%D0%B2'
     # url = 'https://rabota.ua/zapros/python'
