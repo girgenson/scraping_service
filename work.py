@@ -81,7 +81,6 @@ def rabota(url):
 def dou(url):
     jobs = []
     errors = []
-    # domain = 'https://www.work.ua'
     resp = requests.get(url, headers=headers)
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
@@ -110,11 +109,44 @@ def dou(url):
     return jobs, errors
 
 
+def djinni(url):
+    jobs = []
+    errors = []
+    domain = 'https://djinni.co'
+    resp = requests.get(url, headers=headers)
+    if resp.status_code == 200:
+        soup = BS(resp.content, 'html.parser')
+        main_ul = soup.find('ul', attrs={'class': 'list-jobs'})
+        if main_ul:
+            li_lst = main_ul.find_all('li', attrs={'class': 'list-jobs__item'})
+            for li in li_lst:
+                title = li.find('div', attrs={'class': 'list-jobs__title'})
+                href = title.a['href']
+                cont = li.find('div', attrs={'class': 'list-jobs__description'})
+                content = cont.text
+                company = 'No name'
+                comp = li.find('div', attrs={'class': 'list-jobs__details__info'})
+                if comp:
+                    company = comp.text
+                    jobs.append({'title': title.text,
+                                 'url': domain + href,
+                                 'description': content,
+                                 'company': company,
+                                 })
+        else:
+                errors.append({'url': url, 'title': "Ul doesn't exist"})
+    else:
+        errors.append({'url': url, 'title': "Page doesn't response"})
+    return jobs, errors
+
+
+
 if __name__ == '__main__':
+    url = 'https://djinni.co/jobs/?keywords=python+%D0%BA%D0%B8%D0%B5%D0%B2'
     # url = 'https://rabota.ua/zapros/python'
     # url = 'https://www.work.ua/ru/jobs-kyiv-python/'
-    url = 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'
-    jobs, errors = dou(url)
+    # url = 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'
+    jobs, errors = djinni(url)
     h = codecs.open('work.txt', 'w', 'utf-8')
     h.write(str(jobs))
     h.close()
