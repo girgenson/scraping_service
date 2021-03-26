@@ -1,13 +1,24 @@
 import requests
 import codecs
-from bs4 import BeautifulSoup as BS
 import mysqlx
+
+from bs4 import BeautifulSoup as BS
+from random import choice
+
+
+__all__ = ('work', 'rabota', 'dou', 'djinni')
 
 a = mysqlx.connection
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:47.0) Gecko/20100101 Firefox/47.0',
-           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-           }
+headers = [{'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:47.0) Gecko/20100101 Firefox/47.0',
+           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'},
+           {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) '
+                          'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'},
+           {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.9) Gecko/20100101 Goanna/4.4 '
+                          'Firefox/68.9 PaleMoon/28.8.3',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'},
+           ]
 
 
 def work(url):
@@ -15,7 +26,7 @@ def work(url):
     errors = []
     domain = 'https://www.work.ua'
     url = 'https://www.work.ua/ru/jobs-kyiv-python/'
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=choice(headers))
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
         main_div = soup.find('div', id='pjax-job-list')
@@ -46,7 +57,7 @@ def rabota(url):
     errors = []
     domain = 'https://rabota.ua'
     # url = 'https://rabota.ua/zapros/python/'
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=choice(headers))
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
         new_jobs = soup.find('span', attrs={'class': 'fd-beefy-craftsmen'})
@@ -81,7 +92,7 @@ def rabota(url):
 def dou(url):
     jobs = []
     errors = []
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=choice(headers))
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
         main_div = soup.find('div', id='vacancyListId')
@@ -113,7 +124,7 @@ def djinni(url):
     jobs = []
     errors = []
     domain = 'https://djinni.co'
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=choice(headers))
     if resp.status_code == 200:
         soup = BS(resp.content, 'html.parser')
         main_ul = soup.find('ul', attrs={'class': 'list-jobs'})
@@ -141,12 +152,5 @@ def djinni(url):
 
 
 if __name__ == '__main__':
-    url = 'https://djinni.co/jobs/?keywords=python+%D0%BA%D0%B8%D0%B5%D0%B2'
-    # url = 'https://rabota.ua/zapros/python'
-    # url = 'https://www.work.ua/ru/jobs-kyiv-python/'
-    # url = 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'
     jobs, errors = djinni(url)
-    h = codecs.open('work.txt', 'w', 'utf-8')
-    h.write(str(jobs))
-    h.close()
-    print(errors)
+
