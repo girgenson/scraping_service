@@ -1,6 +1,4 @@
 import requests
-import codecs
-import mysqlx
 
 from bs4 import BeautifulSoup as BS
 from random import choice
@@ -8,7 +6,6 @@ from random import choice
 
 __all__ = ('work', 'rabota', 'dou', 'djinni')
 
-a = mysqlx.connection
 
 headers = [{'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:47.0) Gecko/20100101 Firefox/47.0',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'},
@@ -150,7 +147,4 @@ def djinni(url):
         errors.append({'url': url, 'title': "Page doesn't response"})
     return jobs, errors
 
-
-if __name__ == '__main__':
-    jobs, errors = djinni(url)
 
