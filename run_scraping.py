@@ -12,7 +12,7 @@ import django
 django.setup()
 
 from scraping.parsers import *
-from scraping.models import Vacancy, City, Language
+from scraping.models import Vacancy, City, Language, Error
 
 
 parsers = ((work, 'https://www.work.ua/ru/jobs-kyiv-python/'),
@@ -23,6 +23,7 @@ parsers = ((work, 'https://www.work.ua/ru/jobs-kyiv-python/'),
 
 city = City.objects.filter(slug='kiev').first()
 language = Language.objects.filter(slug='python').first()
+
 jobs, errors = [], []
 for func, url in parsers:
     j, e = func(url)
@@ -36,5 +37,11 @@ for job in jobs:
     except DatabaseError:
         pass
 
+if errors:
+    er = Error(data=errors).save()
 
 
+#
+# h = codecs.open('parsers.txt', 'w', 'utf-8')
+# h.write(str(jobs))
+# h.close()
