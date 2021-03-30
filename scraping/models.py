@@ -67,4 +67,4 @@ class Vacancy(models.Model):
 
 class Error(models.Model):
     timestamp = models.DateField(auto_now_add=True)
-    data = jsonfield.JSONField()
+    data = models.JSONField()
