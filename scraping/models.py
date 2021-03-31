@@ -1,6 +1,9 @@
-import jsonfield
 from django.db import models
 from scraping.utils import from_cyrillic_to_eng
+
+
+def default_urls():
+    return {'work': '', 'rabota': '', 'dou': '', 'djinni': ''}
 
 
 class City(models.Model):
@@ -68,3 +71,14 @@ class Vacancy(models.Model):
 class Error(models.Model):
     timestamp = models.DateField(auto_now_add=True)
     data = models.JSONField()
+
+
+class Url(models.Model):
+    city = models.ForeignKey('City', on_delete=models.CASCADE,
+                             verbose_name='Город')
+    language = models.ForeignKey('Language', on_delete=models.CASCADE,
+                                 verbose_name='Язык программирования')
+    url_data = models.JSONField(default=default_urls)
+
+    class Meta:
+        unique_together = ('city', 'language')
