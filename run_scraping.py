@@ -1,4 +1,3 @@
-import codecs
 import os
 import sys
 
@@ -13,15 +12,14 @@ import django
 django.setup()
 
 from scraping.parsers import *
-from scraping.models import Vacancy, City, Language, Error
-
+from scraping.models import Vacancy, City, Language, Error, Url
 
 User = get_user_model()
 
-parsers = ((work, 'https://www.work.ua/ru/jobs-kyiv-python/'),
-           (dou, 'https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D0%B5%D0%B2&category=Python'),
-           (rabota, 'https://rabota.ua/zapros/python'),
-           (djinni, 'https://djinni.co/jobs/?keywords=python+%D0%BA%D0%B8%D0%B5%D0%B2')
+parsers = ((work, 'work'),
+           (dou, 'dou'),
+           (rabota, 'rabota'),
+           (djinni, 'djinni')
 )
 
 
@@ -30,18 +28,38 @@ def get_settings():
     settings_list = set((q['city_id'], q['language_id']) for q in qs)
     return settings_list
 
-q = get_settings()
-city = City.objects.filter(slug='kiev').first()
-language = Language.objects.filter(slug='python').first()
+
+def get_urls(_settings):
+    qs = Url.objects.all().values()
+    url_dict = {(q['city_id'], q['language_id']): q['url_data'] for q in qs}
+    urls = []
+    for pair in _settings:
+        tmp = {}
+        tmp['city'] = pair[0]
+        tmp['language'] = pair[1]
+        tmp['url_data'] = url_dict[pair]
+        urls.append(tmp)
+    return urls
+
+
+
+settings = get_settings()
+url_list = get_urls(settings)
+
+# city = City.objects.filter(slug='kiev').first()
+# language = Language.objects.filter(slug='python').first()
 
 jobs, errors = [], []
-for func, url in parsers:
-    j, e = func(url)
-    jobs += j
-    errors += e
+for data in url_list:
+
+    for func, key in parsers:
+        url = data['url_data'][key]
+        j, e = func(url, city=data['city'], language=data['language'])
+        jobs += j
+        errors += e
 
 for job in jobs:
-    v = Vacancy(**job, city=city, language=language)
+    v = Vacancy(**job)
     try:
         v.save()
     except DatabaseError:
