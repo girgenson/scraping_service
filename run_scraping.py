@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 
@@ -22,6 +23,9 @@ parsers = ((work, 'work'),
            (djinni, 'djinni')
 )
 
+jobs, errors = [], []
+
+
 
 def get_settings():
     qs = User.objects.filter(send_email=True).values()
@@ -42,21 +46,35 @@ def get_urls(_settings):
     return urls
 
 
+async def main(value):
+    funk, url, city, language = value
+    job, err = await loop.run_in_executor(None, funk, url, city, language)
+    errors.extend(err)
+    jobs.extend(job)
+
 
 settings = get_settings()
 url_list = get_urls(settings)
 
-# city = City.objects.filter(slug='kiev').first()
-# language = Language.objects.filter(slug='python').first()
-
 jobs, errors = [], []
-for data in url_list:
+loop = asyncio.get_event_loop()
+tmp_tasks = [(func, data['url_data'][key], data['city'], data['language'])
+             for data in url_list
+             for func, key in parsers]
 
-    for func, key in parsers:
-        url = data['url_data'][key]
-        j, e = func(url, city=data['city'], language=data['language'])
-        jobs += j
-        errors += e
+tasks = asyncio.wait([loop.create_task(main(f)) for f in tmp_tasks])
+
+
+# for data in url_list:
+#
+#     for func, key in parsers:
+#         url = data['url_data'][key]
+#         j, e = func(url, city=data['city'], language=data['language'])
+#         jobs += j
+#         errors += e
+
+loop.run_until_complete(tasks)
+loop.close()
 
 for job in jobs:
     v = Vacancy(**job)
@@ -69,7 +87,6 @@ if errors:
     er = Error(data=errors).save()
 
 
-#
 # h = codecs.open('parsers.txt', 'w', 'utf-8')
 # h.write(str(jobs))
 # h.close()
