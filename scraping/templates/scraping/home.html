@@ -4,36 +4,19 @@
 
 
 {% block content %}
-
     <div class="row">
-        <div class='col-md-3'>
-             <form method="GET" action="">
-                <div class="form-input">
-                    {{ form.as_p }}
-                </div>
-              <input type="submit" value="Submit">
-             </form>
-        </div>
+        <div class="col"><h2>Сервис по сбору и рассылке вакансий</h2></div>
     </div>
-
-    {% for obj in object_list %}
-        <div class="card my-2">
-          <h5 class="card-header"><a href="{{ obj.url }}">{{ obj.title }}</a></h5>
-          <div class="card-body">
-              <h4>{{ obj.company }}</h4>
-              <p class="card-text">{{ obj.description }}</p>
-              <p>{{ obj.city.name }} | {{ obj.language.name }} | <small>{{ obj.timestamp|date:"d-m-Y" }}</small></p>
-          </div>
-        </div>
-
-    {% empty %}
-        <h5>
-            К сожалению, по вашему запросу ничего не найдено
-        </h5>
-    {% endfor %}
-
-
-
-
+    <div class ="row">
+    <div class="col-md-6 mx-auto">
+        <p4>Для просмотра доступных вакансий, заполните форму по одному из полей (город, специальность, язык программирования)</p4>
+    </div>
+        <form method="GET" action="{% url 'list' %}">
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </form>
+    </div>
 
 {% endblock content %}

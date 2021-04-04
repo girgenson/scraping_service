@@ -4,6 +4,11 @@ from . forms import FindForm
 
 
 def home_view(request):
+    form = FindForm()
+    return render(request, 'home.html', {'form': form})
+
+
+def list_view(request):
     # print(request.GET)
     form = FindForm()
     city = request.GET.get('city')
@@ -17,4 +22,4 @@ def home_view(request):
             _filter['language__slug'] = language
 
         qs = Vacancy.objects.filter(**_filter)
-    return render(request, 'home.html', {'object_list': qs, 'form': form})
+    return render(request, 'list.html', {'object_list': qs, 'form': form})
