@@ -19,7 +19,7 @@
     {% endfor %}
     <div class="row">
         <div class="col-md-6 mx-auto">
-            <form method="GET" action="">
+            <form method="GET" action="{% url 'list' %}">
                 <div class="form-group">
                     {{ form.as_p }}
                 </div>
