@@ -13,7 +13,7 @@ import django
 django.setup()
 
 from scraping.parsers import *
-from scraping.models import Vacancy, City, Language, Error, Url
+from scraping.models import Vacancy, Error, Url
 
 User = get_user_model()
 
@@ -21,10 +21,9 @@ parsers = ((work, 'work'),
            (dou, 'dou'),
            (rabota, 'rabota'),
            (djinni, 'djinni')
-)
+           )
 
 jobs, errors = [], []
-
 
 
 def get_settings():
@@ -47,11 +46,10 @@ def get_urls(_settings):
 
 
 async def main(value):
-    funk, url, city, language = value
-    job, err = await loop.run_in_executor(None, funk, url, city, language)
+    func, url, city, language = value
+    job, err = await loop.run_in_executor(None, func, url, city, language)
     errors.extend(err)
     jobs.extend(job)
-
 
 settings = get_settings()
 url_list = get_urls(settings)
@@ -63,7 +61,6 @@ tmp_tasks = [(func, data['url_data'][key], data['city'], data['language'])
              for func, key in parsers]
 
 tasks = asyncio.wait([loop.create_task(main(f)) for f in tmp_tasks])
-
 
 # for data in url_list:
 #
@@ -85,7 +82,6 @@ for job in jobs:
 
 if errors:
     er = Error(data=errors).save()
-
 
 # h = codecs.open('parsers.txt', 'w', 'utf-8')
 # h.write(str(jobs))

@@ -39,7 +39,7 @@ def work(url, city=None, language=None):
                     if logo:
                         company = logo['alt']
                     jobs.append({'title': title.text,
-                                 'url': href,
+                                 'url': domain + href,
                                  'description': content,
                                  'company': company,
                                  'city_id': city,
@@ -77,7 +77,7 @@ def rabota(url, city=None, language=None):
                             if p:
                                 company = p.get('title')
                             jobs.append({'title': title.text,
-                                         'url': href,
+                                         'url': domain + href,
                                          'description': content,
                                          'company': company,
                                          'city_id': city,
@@ -147,7 +147,7 @@ def djinni(url, city=None, language=None):
                     if comp:
                         company = comp.text
                         jobs.append({'title': title.text,
-                                     'url': href,
+                                     'url': domain + href,
                                      'description': content,
                                      'company': company,
                                      'city_id': city,
