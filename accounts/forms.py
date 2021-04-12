@@ -14,7 +14,7 @@ class UserLoginForm(forms.Form):
 
         if email and password:
             qs = User.objects.filter(email=email)
-            if not qs.exsists():
+            if not qs.exists():
                 raise forms.ValidationError('Такого пользователя нет')
             if not check_password(password, qs[0].password):
                 raise forms.ValidationError('Пароль неверный')
@@ -22,4 +22,5 @@ class UserLoginForm(forms.Form):
             user = authenticate(email=email, password=password)
             if not user:
                 raise forms.ValidationError('Данный аккаунт отключен')
+
         return super(UserLoginForm, self).clean(*args, **kwargs)
