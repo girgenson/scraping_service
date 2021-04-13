@@ -43,10 +43,16 @@
                     <a class="nav-link" href="{% url 'accounts:logout' %}" tabindex="-1" aria-disabled="true">Выйти</a>
                   </li>
               {% else %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:register' %}" tabindex="-1" aria-disabled="true">Регистрация</a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:login' %}" tabindex="-1" aria-disabled="true">Войти</a>
                 </li>
               {% endif %}
+
 
             </ul>
             <form class="d-flex">
