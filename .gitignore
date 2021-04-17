@@ -16,3 +16,4 @@ TODO.py
 *.json
 *.txt
 /win_env
+.
