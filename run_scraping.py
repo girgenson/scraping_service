@@ -28,8 +28,8 @@ jobs, errors = [], []
 
 def get_settings():
     qs = User.objects.filter(send_email=True).values()
-    settings_list = set((q['city_id'], q['language_id']) for q in qs)
-    return settings_list
+    settings_lst = set((q['city_id'], q['language_id']) for q in qs)
+    return settings_lst
 
 
 def get_urls(_settings):
@@ -86,3 +86,4 @@ if errors:
 # h = codecs.open('parsers.txt', 'w', 'utf-8')
 # h.write(str(jobs))
 # h.close()
+
