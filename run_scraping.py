@@ -1,7 +1,7 @@
 import asyncio
 import os
 import sys
-
+import datetime as dt
 from django.contrib.auth import get_user_model
 from django.db import DatabaseError
 
@@ -37,11 +37,12 @@ def get_urls(_settings):
     url_dict = {(q['city_id'], q['language_id']): q['url_data'] for q in qs}
     urls = []
     for pair in _settings:
-        tmp = {}
-        tmp['city'] = pair[0]
-        tmp['language'] = pair[1]
-        tmp['url_data'] = url_dict[pair]
-        urls.append(tmp)
+        if pair in url_dict:
+            tmp = {}
+            tmp['city'] = pair[0]
+            tmp['language'] = pair[1]
+            tmp['url_data'] = url_dict[pair]
+            urls.append(tmp)
     return urls
 
 
@@ -81,7 +82,12 @@ for job in jobs:
         pass
 
 if errors:
-    er = Error(data=errors).save()
+    qs = Error.objects.filter(timestamp=dt.date.today())
+    if qs.exists():
+        err = qs.first()
+        err.save()
+    else:
+        er = Error(data=f'errors: {errors}').save()
 
 # h = codecs.open('parsers.txt', 'w', 'utf-8')
 # h.write(str(jobs))
