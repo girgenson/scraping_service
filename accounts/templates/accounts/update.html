@@ -20,4 +20,21 @@
         </form>
     </div>
 </div>
+
+<div class="mx-auto" style="width: 500px;">
+  <div class="container">
+        <div class="mx-auto">
+            <p class="my-2">Если вы не нашли подходящий набор "Город-специальность",
+                вы можете заполнить форму ниже с вашими пожеланиями.
+                После того, как данные будут добавлены, вы получите письмо на указанный e-mail</p>
+        </div>
+        <form method="POST" action="{% url 'accounts:contact' %}">{% csrf_token %}
+            <div class="form-group">
+                {{ contact_form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+
+    </div>
+</div>
 {% endblock content %}

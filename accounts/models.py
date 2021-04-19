@@ -27,7 +27,7 @@ class MyUserManager(BaseUserManager):
         """
         user = self.create_user(
             email,
-            password=password,
+            password=password
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -40,14 +40,8 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-
-    objects = MyUserManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
     city = ForeignKey('scraping.City',
                       on_delete=models.SET_NULL,
@@ -60,6 +54,11 @@ class MyUser(AbstractBaseUser):
                           blank=True
                           )
     send_email = models.BooleanField(default=True)
+
+    objects = MyUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

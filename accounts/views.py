@@ -1,11 +1,11 @@
+import datetime as dt
+
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from accounts.forms import UserLoginForm, UserRegistrationForm, UserUpdateForm, ContactForm
 from scraping.models import Error
-
-
-import datetime as dt
 
 
 User = get_user_model()
@@ -75,9 +75,25 @@ def delete_view(request):
 def contact(request):
     if request.method == 'POST':
         contact_form = ContactForm(request.POST or None)
-        if contact_form.Is_valid():
+        if contact_form.is_valid():
             data = contact_form.cleaned_data
             city = data.get('city')
             language = data.get('language')
             email = data.get('email')
             qs = Error.objects.filter(timestamp=dt.date.today())
+            if qs.exists():
+                err = qs.first()
+                data = err.data.get('user_data', [])
+                data.append({'city': city, 'email': email, 'language': language})
+                err.data['user_data'] = data
+                err.save()
+            else:
+                data = {'user_data': [{'city': city, 'email': email, 'language': language}]}
+                Error(data=data).save()
+            messages.success(request, 'Данные отправлены администрации.')
+            return redirect('accounts:update')
+        else:
+            return redirect('accounts:update')
+    else:
+        return redirect('accounts:login')
+
