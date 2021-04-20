@@ -93,4 +93,5 @@ if errors:
 # h = codecs.open('parsers.txt', 'w', 'utf-8')
 # h.write(str(jobs))
 # h.close()
-
+ten_days_ago = dt.date.today() - dt.timedelta(10)
+Vacancy.objects.filter(timestamp__lte=ten_days_ago).delete()
