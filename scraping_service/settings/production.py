@@ -36,7 +36,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://scraping-service-339.herokuapp.com/']
+ALLOWED_HOSTS = ['scraping-service-339.herokuapp.com/']
 
 
 # Application definition
