@@ -1,0 +1,8 @@
+@font-face {
+    font-family: Roboto;
+    src: url(../fonts/Roboto-Black.ttf)
+}
+#brand {
+    font-family: Roboto;
+    color: #FFF;
+}
